@@ -68,7 +68,7 @@ async function add(house) {
 }
 
 function _housesFilter(houses, { txt = '', capacity = 1, type = 'all' }) {
-  houses = houses.filter(house => house.name.toLowerCase().includes(txt))
+  houses = houses.filter(house => house.location.city.toLowerCase().includes(txt))
   if (capacity) houses = houses.filter(house => house.capacity >= +capacity)
   if (type !== 'all') houses = houses.filter(house => house.type === type)
   return houses
