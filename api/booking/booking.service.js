@@ -4,54 +4,24 @@ const ObjectId = require('mongodb').ObjectId
 
 
 async function query(filterBy = {}) {
-    // TODO: Build the criteria with $regex
-    // const criteria = _buildCriteria(filterBy)
-    const collection = await dbService.getCollection('booking')
     try {
+        const collection = await dbService.getCollection('booking')
         // const bookings = await collection.find(criteria).toArray();
-        var bookings = await collection.aggregate([
-            {
-                $match: filterBy
-            },
-            {
-                $lookup:
-                {
-                    localField: 'byUserId',
-                    from: 'user',
-                    foreignField: '_id',
-                    as: 'byUser'
-                }
-            },
-            {
-                $unwind: '$byUser'
-            },
-            {
-                $lookup:
-                {
-                    localField: 'aboutUserId',
-                    from: 'user',
-                    foreignField: '_id',
-                    as: 'aboutUser'
-                }
-            },
-            {
-                $unwind: '$aboutUser'
-            }
-        ]).toArray()
+        // bookings = bookings.map(booking => {
+        //     booking.byUser = { _id: booking.byUser._id, username: booking.byUser.username }
+        //     booking.aboutUser = { _id: booking.aboutUser._id, username: booking.aboutUser.username }
+        //     delete booking.byUserId;
+        //     delete booking.aboutUserId;
+        //     return booking;
+        // })
 
-        bookings = bookings.map(booking => {
-            booking.byUser = { _id: booking.byUser._id, username: booking.byUser.username }
-            booking.aboutUser = { _id: booking.aboutUser._id, username: booking.aboutUser.username }
-            delete booking.byUserId;
-            delete booking.aboutUserId;
-            return booking;
-        })
-
-        return bookings
+        // return bookings
+        return collection
     } catch (err) {
         console.log('ERROR: cannot find bookings')
         throw err;
     }
+    
 }
 
 async function remove(bookingId) {
@@ -66,11 +36,10 @@ async function remove(bookingId) {
 
 
 async function add(booking) {
-    booking.byUserId = ObjectId(booking.byUserId);
-    booking.aboutUserId = ObjectId(booking.aboutUserId);
-
-    const collection = await dbService.getCollection('booking')
+    const collection = await dbService.getCollection('booking');
     try {
+        const bookings = await collection.find().toArray();
+        // if (bookings.find(aBooking => aBooking.checkIn ))
         await collection.insertOne(booking);
         return booking;
     } catch (err) {

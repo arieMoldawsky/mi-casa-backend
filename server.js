@@ -34,7 +34,7 @@ if (process.env.NODE_ENV === 'production') {
 const authRoutes = require('./api/auth/auth.routes')
 const userRoutes = require('./api/user/user.routes')
 const houseRoutes = require('./api/house/house.routes')
-// const bookingRoutes = require('./api/booking/booking.routes')
+const bookingRoutes = require('./api/booking/booking.routes')
 const connectSockets = require('./api/socket/socket.routes')
 
 
@@ -42,7 +42,7 @@ const connectSockets = require('./api/socket/socket.routes')
 app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/house', houseRoutes)
-// app.use('/api/booking', bookingRoutes)
+app.use('/api/booking', bookingRoutes)
 connectSockets(io)
 
 app.get('/**', (req, res) => {

@@ -1,7 +1,6 @@
 const logger = require('../../services/logger.service')
 const bookingService = require('./booking.service')
 
-// TODO: needs error handling! try, catch
 
 async function getBookings(req, res) {
     try {
@@ -25,11 +24,15 @@ async function deleteBooking(req, res) {
 
 async function addBooking(req, res) {
     var booking = req.body;
-    booking.byUserId = req.session.user._id;
+    // booking.byUserId = req.session.user._id;
+    if (req.session.user) {
+        booking.guestUser = {
+            _id: req.session.user._id,
+            fullName: req.session.user.fullName,
+            imgUrl: req.session.user.imgUrl
+        };
+    }
     booking = await bookingService.add(booking)
-    booking.byUser = req.session.user;
-    // TODO - need to find aboutUser
-    booking.aboutUser = {}
     res.send(booking)
 }
 
