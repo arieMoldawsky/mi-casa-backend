@@ -36,11 +36,10 @@ async function remove(bookingId) {
 
 
 async function add(booking) {
-    // booking.guestUser = ObjectId(booking.byUserId);
-    // booking.aboutUserId = ObjectId(booking.aboutUserId);
-
-    const collection = await dbService.getCollection('booking')
+    const collection = await dbService.getCollection('booking');
     try {
+        const bookings = await collection.find().toArray();
+        // if (bookings.find(aBooking => aBooking.checkIn ))
         await collection.insertOne(booking);
         return booking;
     } catch (err) {
