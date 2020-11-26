@@ -21,7 +21,7 @@ async function query(filterBy = {}) {
         console.log('ERROR: cannot find bookings')
         throw err;
     }
-    
+
 }
 
 async function remove(bookingId) {
@@ -38,10 +38,16 @@ async function remove(bookingId) {
 async function add(booking) {
     const collection = await dbService.getCollection('booking');
     try {
-        const bookings = await collection.find().toArray();
-        // if (bookings.find(aBooking => aBooking.checkIn ))
-        await collection.insertOne(booking);
-        return booking;
+        const takenBookings = await collection.findOne({
+            $and: [
+                { checkIn: { $gte: booking.checkIn } },
+                { checkOut: { $lte: booking.checkOut } }
+            ]
+        });
+        if (!takenBookings) {
+            await collection.insertOne(booking);
+            return booking;
+        } else return Promise.reject('Dates are already taken.')
     } catch (err) {
         console.log(`ERROR: cannot insert user`)
         throw err;
