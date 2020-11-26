@@ -31,9 +31,21 @@ async function addBooking(req, res) {
         imgUrl: req.session.user.imgUrl
     };
     try {
-
         booking = await bookingService.add(booking)
         res.send(booking)
+    } catch (err) {
+        logger.error('Cannot add booking', err);
+        res.status(500).send({ error: 'Dates are already taken' })
+    }
+}
+
+async function checkAvailability(req, res) {
+    var booking = req.body;
+    console.log('controller', booking);
+    try {
+        const isAvailable = await bookingService.check(booking)
+        res.send(true);
+        // else res.send(false);
     } catch (err) {
         logger.error('Cannot add booking', err);
         res.status(500).send({ error: 'Dates are already taken' })
@@ -43,5 +55,6 @@ async function addBooking(req, res) {
 module.exports = {
     getBookings,
     deleteBooking,
-    addBooking
+    addBooking,
+    checkAvailability
 }
