@@ -54,6 +54,24 @@ async function add(booking) {
     }
 }
 
+async function check(booking) {
+    const collection = await dbService.getCollection('booking');
+    try {
+        const takenBookings = await collection.findOne({
+            $and: [
+                { checkIn: { $gte: booking.checkIn } },
+                { checkOut: { $lte: booking.checkOut } }
+            ]
+        });
+        if (!takenBookings) {
+            return true;
+        } else return Promise.reject('Dates are already taken.')
+    } catch (err) {
+        console.log(`ERROR: cannot insert user`)
+        throw err;
+    }
+}
+
 function _buildCriteria(filterBy) {
     const criteria = {};
     return criteria;
@@ -62,7 +80,8 @@ function _buildCriteria(filterBy) {
 module.exports = {
     query,
     remove,
-    add
+    add,
+    check
 }
 
 
