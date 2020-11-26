@@ -1,41 +1,40 @@
 const logger = require('../../services/logger.service')
-const reviewService = require('./review.service')
+const bookingService = require('./booking.service')
 
 // TODO: needs error handling! try, catch
 
-async function getReviews(req, res) {
+async function getBookings(req, res) {
     try {
-        const reviews = await reviewService.query(req.query)
-        res.send(reviews)
+        const bookings = await bookingService.query(req.query)
+        res.send(bookings)
     } catch (err) {
-        logger.error('Cannot get reviews', err);
-        res.status(500).send({ error: 'cannot get reviews' })
-
+        logger.error('Cannot get bookings', err);
+        res.status(500).send({ error: 'cannot get bookings' })
     }
 }
 
-async function deleteReview(req, res) {
+async function deleteBooking(req, res) {
     try {
-        await reviewService.remove(req.params.id)
+        await bookingService.remove(req.params.id)
         res.end()
     } catch (err) {
-        logger.error('Cannot delete review', err);
-        res.status(500).send({ error: 'cannot delete review' })
+        logger.error('Cannot delete booking', err);
+        res.status(500).send({ error: 'cannot delete booking' })
     }
 }
 
-async function addReview(req, res) {
-    var review = req.body;
-    review.byUserId = req.session.user._id;
-    review = await reviewService.add(review)
-    review.byUser = req.session.user;
+async function addBooking(req, res) {
+    var booking = req.body;
+    booking.byUserId = req.session.user._id;
+    booking = await bookingService.add(booking)
+    booking.byUser = req.session.user;
     // TODO - need to find aboutUser
-    review.aboutUser = {}
-    res.send(review)
+    booking.aboutUser = {}
+    res.send(booking)
 }
 
 module.exports = {
-    getReviews,
-    deleteReview,
-    addReview
+    getBookings,
+    deleteBooking,
+    addBooking
 }

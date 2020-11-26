@@ -1,13 +1,13 @@
 const express = require('express')
 const {requireAuth, requireAdmin} = require('../../middlewares/requireAuth.middleware')
-const {addReview, getReviews, deleteReview} = require('./review.controller')
+const {addBooking, getBookings, deleteBooking} = require('./booking.controller')
 const router = express.Router()
 
 // middleware that is specific to this router
 // router.use(requireAuth)
 
-router.get('/', getReviews)
-router.post('/',  requireAuth, addReview)
-router.delete('/:id',  requireAuth, deleteReview)
+router.get('/', getBookings)
+router.post('/',  requireAuth, addBooking)
+router.delete('/:id',  requireAuth, deleteBooking)
 
 module.exports = router

@@ -67,10 +67,10 @@ async function add(house) {
   }
 }
 
-function _housesFilter(houses, { txt = '', inStock = false, category = 'all' }) {
+function _housesFilter(houses, { txt = '', capacity = 1, type = 'all' }) {
   houses = houses.filter(house => house.name.toLowerCase().includes(txt))
-  if (inStock) houses = houses.filter(house => house.inStock)
-  if (category !== 'all') houses = houses.filter(house => house.category === category)
+  if (capacity) houses = houses.filter(house => house.capacity >= +capacity)
+  if (type !== 'all') houses = houses.filter(house => house.type === type)
   return houses
 }
 

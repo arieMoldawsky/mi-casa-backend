@@ -9,11 +9,11 @@ function connectSockets(io) {
       chatMap[socket.myTopic].push(msg)
       io.to(socket.myTopic).emit('chatAddMsg', msg)
     })
-
+    
     socket.on('isTyping', name => {
       io.to(socket.myTopic).emit('isTyping', name)
     })
-
+    
     socket.on('chatTopic', topic => {
       if (socket.myTopic) socket.leave(socket.myTopic)
       socket.join(topic)
