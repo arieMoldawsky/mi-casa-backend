@@ -34,7 +34,7 @@ if (process.env.NODE_ENV === 'production') {
 const authRoutes = require('./api/auth/auth.routes')
 const userRoutes = require('./api/user/user.routes')
 const houseRoutes = require('./api/house/house.routes')
-// const bookingRoutes = require('./api/booking/booking.routes')
+const bookingRoutes = require('./api/booking/booking.routes')
 const connectSockets = require('./api/socket/socket.routes')
 
 
