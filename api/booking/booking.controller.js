@@ -30,8 +30,14 @@ async function addBooking(req, res) {
         fullName: req.session.user.fullName,
         imgUrl: req.session.user.imgUrl
     };
-    booking = await bookingService.add(booking)
-    res.send(booking)
+    try {
+
+        booking = await bookingService.add(booking)
+        res.send(booking)
+    } catch (err) {
+        logger.error('Cannot delete booking', err);
+        res.status(500).send({ error: 'Dates are already taken' })
+    }
 }
 
 module.exports = {
