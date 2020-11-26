@@ -25,13 +25,11 @@ async function deleteBooking(req, res) {
 async function addBooking(req, res) {
     var booking = req.body;
     // booking.byUserId = req.session.user._id;
-    if (req.session.user) {
         booking.guestUser = {
             _id: req.session.user._id,
             fullName: req.session.user.fullName,
             imgUrl: req.session.user.imgUrl
         };
-    }
     booking = await bookingService.add(booking)
     res.send(booking)
 }
