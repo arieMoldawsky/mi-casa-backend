@@ -35,7 +35,7 @@ async function addBooking(req, res) {
         booking = await bookingService.add(booking)
         res.send(booking)
     } catch (err) {
-        logger.error('Cannot delete booking', err);
+        logger.error('Cannot add booking', err);
         res.status(500).send({ error: 'Dates are already taken' })
     }
 }
