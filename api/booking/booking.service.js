@@ -39,8 +39,14 @@ async function add(booking) {
     const collection = await dbService.getCollection('booking');
     try {
         const houseBookings = await collection.find({houseId: booking.houseId}).toArray();
-        const takenBookings = houseBookings.find(aBooking => aBooking.checkIn >= booking.checkIn && aBooking.checkOut <= booking.checkOut)
-        
+        const takenBookings = houseBookings.find(aBooking => {
+            return ((aBooking.checkIn <= booking.checkIn && aBooking.checkIn <= booking.checkOut) &&
+            (aBooking.checkOut >= booking.checkOut && aBooking.checkOut >= booking.checkIn)) ||
+            (aBooking.checkIn > booking.checkIn && aBooking.checkOut < booking.checkOut) ||
+            (aBooking.checkIn > booking.checkIn && (aBooking.checkOut > booking.checkOut && aBooking.checkIn < booking.checkOut)) ||
+            (aBooking.checkOut < booking.checkOut && (aBooking.checkIn < booking.checkIn && aBooking.checkOut > booking.checkIn))
+        })
+                
         if (!takenBookings) {
             await collection.insertOne(booking);
             return booking;
@@ -55,8 +61,14 @@ async function check(booking) {
     const collection = await dbService.getCollection('booking');
     try {
         const houseBookings = await collection.find({houseId: booking.houseId}).toArray();
-        const takenBookings = houseBookings.find(aBooking = aBooking.checkIn >= booking.checkIn && aBooking.checkOut <= booking.checkOut)
-        
+        const takenBookings = houseBookings.find(aBooking => {
+            return ((aBooking.checkIn <= booking.checkIn && aBooking.checkIn <= booking.checkOut) &&
+            (aBooking.checkOut >= booking.checkOut && aBooking.checkOut >= booking.checkIn)) ||
+            (aBooking.checkIn > booking.checkIn && aBooking.checkOut < booking.checkOut) ||
+            (aBooking.checkIn > booking.checkIn && (aBooking.checkOut > booking.checkOut && aBooking.checkIn < booking.checkOut)) ||
+            (aBooking.checkOut < booking.checkOut && (aBooking.checkIn < booking.checkIn && aBooking.checkOut > booking.checkIn))
+        })
+
         console.log(takenBookings, booking);
         if (!takenBookings) {
             return true;
