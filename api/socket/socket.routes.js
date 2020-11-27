@@ -20,7 +20,7 @@ function connectSockets(io) {
     })
 
     socket.on('onBookingAdded', msg => {
-      const txt = `${msg.booking.guestUser.fullName} has ordered yor house: ${msg.booking.houseId}`
+      const txt = `${msg.booking.guestUser.fullName} has ordered yor house: ${msg.booking.house.name}`
       io.to(msg.hostId).emit('userMsg', {txt, type: 'success'})
     })
 
