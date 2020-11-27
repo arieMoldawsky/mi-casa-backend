@@ -41,7 +41,7 @@ async function addBooking(req, res) {
 
 async function checkAvailability(req, res) {
     var booking = req.body;
-    console.log('controller', booking);
+    // console.log('controller', booking);
     try {
         const isAvailable = await bookingService.check(booking)
         res.send(true);
