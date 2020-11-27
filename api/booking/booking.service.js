@@ -38,18 +38,15 @@ async function remove(bookingId) {
 async function add(booking) {
     const collection = await dbService.getCollection('booking');
     try {
-        const takenBookings = await collection.findOne({
-            $and: [
-                { checkIn: { $gte: booking.checkIn } },
-                { checkOut: { $lte: booking.checkOut } }
-            ]
-        });
+        const houseBookings = await collection.find({houseId: booking.houseId}).toArray();
+        const takenBookings = houseBookings.find(aBooking => aBooking.checkIn >= booking.checkIn && aBooking.checkOut <= booking.checkOut)
+        
         if (!takenBookings) {
             await collection.insertOne(booking);
             return booking;
         } else return Promise.reject('Dates are already taken.')
     } catch (err) {
-        console.log(`ERROR: cannot insert user`)
+        console.log(`ERROR: cannot insert booking`)
         throw err;
     }
 }
@@ -57,17 +54,15 @@ async function add(booking) {
 async function check(booking) {
     const collection = await dbService.getCollection('booking');
     try {
-        const takenBookings = await collection.findOne({
-            $and: [
-                { checkIn: { $gte: booking.checkIn } },
-                { checkOut: { $lte: booking.checkOut } }
-            ]
-        });
+        const houseBookings = await collection.find({houseId: booking.houseId}).toArray();
+        const takenBookings = houseBookings.find(aBooking = aBooking.checkIn >= booking.checkIn && aBooking.checkOut <= booking.checkOut)
+        
+        console.log(takenBookings, booking);
         if (!takenBookings) {
             return true;
         } else return Promise.reject('Dates are already taken.')
     } catch (err) {
-        console.log(`ERROR: cannot insert user`)
+        console.log(`ERROR: cannot check bookings`)
         throw err;
     }
 }
