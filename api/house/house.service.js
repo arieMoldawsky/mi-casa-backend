@@ -68,7 +68,6 @@ async function add(house) {
 
 function _buildCriteria(query) {
   const criteria = {}
-  console.log(query);
   if (query.txt) {
     if (!criteria.$or) criteria.$or = []
     const regex = new RegExp(query.txt.split(/,|-| /).join('|'), 'i')
