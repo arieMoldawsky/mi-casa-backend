@@ -12,17 +12,8 @@ module.exports = {
 async function query(query) {
   const collection = await dbService.getCollection('house')
   try {
-    const txt = query.txt ? query.txt : ''
-    const regex = new RegExp(txt.split(/,|-| /).join('|'), 'i')
-    const houses = await collection
-      .find({
-        $or: [
-          { 'location.city': regex },
-          { 'location.country': regex },
-        ],
-      })
-      .toArray()
-    // const housesFiltered = _housesFilter(houses, query)
+    const criteria = _buildCriteria(query)
+    const houses = await collection.find(criteria).toArray()
     const housesSorted = _housesSorter(houses, query)
     const housesPaged = _housesPager(housesSorted, query)
     return { houses: housesPaged, housesLength: housesSorted.length }
@@ -75,13 +66,22 @@ async function add(house) {
   }
 }
 
-function _housesFilter(houses, { txt = '', capacity = 1, type = 'all' }) {
-  houses = houses.filter(house =>
-    house.location.city.toLowerCase().includes(txt)
-  )
-  if (capacity) houses = houses.filter(house => house.capacity >= +capacity)
-  if (type !== 'all') houses = houses.filter(house => house.type === type)
-  return houses
+function _buildCriteria(query) {
+  const criteria = {}
+  console.log(query);
+  if (query.txt) {
+    if (!criteria.$or) criteria.$or = []
+    const regex = new RegExp(query.txt.split(/,|-| /).join('|'), 'i')
+    criteria.$or.push({ 'location.city': regex }, { 'location.country': regex })
+  }
+  if (query.adults) {
+    var total = +query.adults
+    if (query.kids) total += +query.kids
+    if (query.infants) total += +query.infants
+    if (!criteria.$or) criteria.$or = []
+    criteria.capacity = { $gte: total } 
+  }
+  return criteria
 }
 
 function _housesSorter(houses, { sortBy = 'name' }) {
