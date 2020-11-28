@@ -18,10 +18,18 @@ function connectSockets(io) {
       socket.join(userId)
       socket.userId = userId
     })
-
+    
     socket.on('onBookingAdded', msg => {
-      const txt = `${msg.booking.guestUser.fullName} has ordered yor house: ${msg.booking.house.name}`
-      io.to(msg.hostId).emit('userMsg', {txt, type: 'success'})
+      io.to(msg.hostId).emit('userMsg', {
+        type: `success`,
+        title: `Order Received!`,
+        txt: `
+        ${msg.booking.guestUser.fullName} has ordered ${msg.booking.house.name}
+        <br>From: ${_formatDate(msg.booking.checkIn)}
+        <br>To: ${_formatDate(msg.booking.checkOut)}
+        <br> <a href="#/">View Order</a>
+        `,
+      })
     })
 
     socket.on('chatTopic', topic => {
@@ -34,5 +42,13 @@ function connectSockets(io) {
     })
 
     socket.on('disconnect', () => {})
+  })
+}
+
+function _formatDate(date) {
+  return new Date(date).toLocaleDateString('en-us', {
+    timeZone: 'utc',
+    month: 'short',
+    day: 'numeric',
   })
 }

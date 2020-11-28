@@ -12,9 +12,17 @@ module.exports = {
 async function query(query) {
   const collection = await dbService.getCollection('house')
   try {
-    const houses = await collection.find().toArray()
-    const housesFiltered = _housesFilter(houses, query)
-    const housesSorted = _housesSorter(housesFiltered, query)
+    const regex = new RegExp(query.txt.split(/,|-| /).join('|'), 'i')
+    const houses = await collection
+      .find({
+        $or: [
+          { 'location.city': regex },
+          { 'location.country': regex },
+        ],
+      })
+      .toArray()
+    // const housesFiltered = _housesFilter(houses, query)
+    const housesSorted = _housesSorter(houses, query)
     const housesPaged = _housesPager(housesSorted, query)
     return { houses: housesPaged, housesLength: housesSorted.length }
   } catch (err) {
@@ -26,33 +34,32 @@ async function query(query) {
 async function remove(houseId) {
   const collection = await dbService.getCollection('house')
   try {
-    return await collection.deleteOne({ '_id': ObjectId(houseId) })
+    return await collection.deleteOne({ _id: ObjectId(houseId) })
   } catch (err) {
     console.log(`ERROR: cannot remove house ${houseId}`)
-    throw err;
+    throw err
   }
 }
 
 async function getById(houseId) {
-  
   const collection = await dbService.getCollection('house')
   try {
-    return await collection.findOne({ '_id': ObjectId(houseId) })
+    return await collection.findOne({ _id: ObjectId(houseId) })
   } catch (err) {
     console.log(`ERROR: cannot remove house ${houseId}`)
-    throw err;
+    throw err
   }
 }
 
 async function update(house) {
   const collection = await dbService.getCollection('house')
-  house._id = ObjectId(house._id);
+  house._id = ObjectId(house._id)
   try {
     await collection.findOneAndUpdate({ _id: house._id }, { $set: house })
     return house
   } catch (err) {
     console.log(`ERROR: cannot update house ${house._id}`)
-    throw err;
+    throw err
   }
 }
 
@@ -68,7 +75,9 @@ async function add(house) {
 }
 
 function _housesFilter(houses, { txt = '', capacity = 1, type = 'all' }) {
-  houses = houses.filter(house => house.location.city.toLowerCase().includes(txt))
+  houses = houses.filter(house =>
+    house.location.city.toLowerCase().includes(txt)
+  )
   if (capacity) houses = houses.filter(house => house.capacity >= +capacity)
   if (type !== 'all') houses = houses.filter(house => house.type === type)
   return houses
@@ -80,7 +89,7 @@ function _housesSorter(houses, { sortBy = 'name' }) {
   })
 }
 
-function _housesPager(houses,{ page = 1, limit = 10 }) {
+function _housesPager(houses, { page = 1, limit = 10 }) {
   return houses.filter(
     (house, idx) => idx >= page * limit - limit && idx <= page * limit - 1
   )

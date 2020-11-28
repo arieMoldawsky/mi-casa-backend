@@ -87,7 +87,7 @@ async function check(booking) {
             )
         })
 
-        console.log(takenBookings, booking)
+        // console.log(takenBookings, booking)
         if (!takenBookings) {
             return true
         } else return Promise.reject('Dates are already taken.')
