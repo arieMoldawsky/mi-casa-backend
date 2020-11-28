@@ -12,7 +12,8 @@ module.exports = {
 async function query(query) {
   const collection = await dbService.getCollection('house')
   try {
-    const regex = new RegExp(query.txt.split(/,|-| /).join('|'), 'i')
+    const txt = query.txt ? query.txt : ''
+    const regex = new RegExp(txt.split(/,|-| /).join('|'), 'i')
     const houses = await collection
       .find({
         $or: [
