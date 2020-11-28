@@ -3,18 +3,10 @@ const ObjectId = require('mongodb').ObjectId
 
 async function query(filterBy = {}) {
     try {
+        const criteria = {"house._id": filterBy.houseId}
         const collection = await dbService.getCollection('booking')
-        // const bookings = await collection.find(criteria).toArray();
-        // bookings = bookings.map(booking => {
-        //     booking.byUser = { _id: booking.byUser._id, username: booking.byUser.username }
-        //     booking.aboutUser = { _id: booking.aboutUser._id, username: booking.aboutUser.username }
-        //     delete booking.byUserId;
-        //     delete booking.aboutUserId;
-        //     return booking;
-        // })
-
-        // return bookings
-        return collection
+        const bookings = await collection.find(criteria).toArray();
+        return bookings
     } catch (err) {
         console.log('ERROR: cannot find bookings')
         throw err
