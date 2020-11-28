@@ -4,21 +4,21 @@ const chatMap = {}
 
 function connectSockets(io) {
   io.on('connection', socket => {
-    socket.on('chatAddMsg', msg => {
-      if (!chatMap[socket.myTopic]) chatMap[socket.myTopic] = []
-      chatMap[socket.myTopic].push(msg)
-      io.to(socket.myTopic).emit('chatAddMsg', msg)
+    socket.on('onChatMsg', msg => {
+      if (!chatMap[socket.houseId]) chatMap[socket.houseId] = []
+      chatMap[socket.houseId].push(msg)
+      io.to(socket.houseId).emit('chatMsg', msg)
     })
 
-    socket.on('isTyping', name => {
-      io.to(socket.myTopic).emit('isTyping', name)
+    socket.on('onIsTyping', name => {
+      io.to(socket.houseId).emit('isTyping', name)
     })
 
     socket.on('onUserLogin', userId => {
       socket.join(userId)
       socket.userId = userId
     })
-    
+
     socket.on('onBookingAdded', msg => {
       io.to(msg.hostId).emit('userMsg', {
         type: `success`,
@@ -32,13 +32,17 @@ function connectSockets(io) {
       })
     })
 
-    socket.on('chatTopic', topic => {
-      if (socket.myTopic) socket.leave(socket.myTopic)
-      if (topic) {
-        socket.join(topic)
-        socket.myTopic = topic
-      } else delete socket.myTopic
-      if (chatMap[topic]) io.to(topic).emit('chatLoadHistory', chatMap[topic])
+    socket.on('onJoinHouseChat', houseId => {
+      socket.leave(socket.houseId)
+      socket.join(houseId)
+      socket.houseId = houseId
+      if (chatMap[houseId])
+        io.to(houseId).emit('chatLoadHistory', chatMap[houseId])
+    })
+
+    socket.on('onLeaveHouseChat', () => {
+      socket.leave(socket.houseId)
+      delete socket.houseId
     })
 
     socket.on('disconnect', () => {})
