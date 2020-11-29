@@ -27,8 +27,8 @@ function connectSockets(io) {
         ${msg.booking.guestUser.fullName} has ordered ${msg.booking.house.name}
         <br>From: ${_formatDate(msg.booking.checkIn)}
         <br>To: ${_formatDate(msg.booking.checkOut)}
-        <br> <a href="#/">View Order</a>
         `,
+        // <br> <a href="#/">View Order</a>
       })
     })
 
