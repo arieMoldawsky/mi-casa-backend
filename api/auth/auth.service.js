@@ -25,7 +25,7 @@ async function signup({ email, password, fullName }) {
     return Promise.reject('email, fullName and password are required!')
 
   const hash = await bcrypt.hash(password, saltRounds)
-  return userService.add({ email, password: hash, fullName })
+  return userService.add({ email, password: hash, fullName, imgUrl })
 }
 
 module.exports = {
