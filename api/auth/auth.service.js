@@ -17,7 +17,7 @@ async function login({ email, password }) {
   return user
 }
 
-async function signup({ email, password, fullName }) {
+async function signup({ email, password, fullName, imgUrl }) {
   logger.debug(
     `auth.service - signup with email: ${email}, fullName: ${fullName}`
   )
