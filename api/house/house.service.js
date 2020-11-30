@@ -79,8 +79,6 @@ function _buildCriteria(query) {
     if (query.infants) total += +query.infants
     criteria.capacity = { $gte: total } 
   }
-  console.log(query);
-  console.log(criteria);
   return criteria
 }
 
