@@ -77,9 +77,10 @@ function _buildCriteria(query) {
     var total = +query.adults
     if (query.kids) total += +query.kids
     if (query.infants) total += +query.infants
-    if (!criteria.$or) criteria.$or = []
     criteria.capacity = { $gte: total } 
   }
+  console.log(query);
+  console.log(criteria);
   return criteria
 }
 
