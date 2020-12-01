@@ -57,6 +57,7 @@ async function update(house) {
 
 async function add(house) {
   const collection = await dbService.getCollection('house')
+  console.log(collection);
   try {
     await collection.insertOne(house)
     return house

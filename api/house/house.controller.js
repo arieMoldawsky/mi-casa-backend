@@ -25,6 +25,7 @@ async function updateHouse(req, res) {
 
 async function addHouse(req, res) {
   const house = req.body
+  // console.log(house);
   await houseService.add(house)
   res.send(house)
 }
