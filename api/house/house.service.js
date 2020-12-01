@@ -85,15 +85,6 @@ function _buildCriteria(query) {
   return criteria
 }
 
-// function _buildSorter({houses, query}) {
-// const sorter = {}
-// if (query.sortBy === 'rating') {
-// sorter[query.sortBy] = -1
-// }
-// console.log(sorter);
-// return sorter
-// }
-
 function _housesSorter(houses, { sortBy = 'rating' }) {
   return houses.sort((a, b) => {
     if (sortBy === 'rating') {

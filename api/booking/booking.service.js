@@ -85,8 +85,6 @@ async function check(booking) {
           aBooking.checkOut > booking.checkIn)
       )
     })
-
-    // console.log(takenBookings, booking)
     if (!takenBookings) {
       return true
     } else return Promise.reject('Dates are already taken.')
@@ -111,8 +109,6 @@ function _buildCriteria(query) {
   //   }
   if (query.houseId) {
     criteria['house._id'] = query.houseId
-    console.log(query);
-    console.log(criteria);
   }
   return criteria
 }
