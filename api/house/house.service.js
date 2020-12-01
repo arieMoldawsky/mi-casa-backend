@@ -10,9 +10,9 @@ module.exports = {
 }
 
 async function query(query) {
-  const collection = await dbService.getCollection('house')
   try {
     const criteria = _buildCriteria(query)
+    const collection = await dbService.getCollection('house')
     const houses = await collection.find(criteria).toArray()
     const housesSorted = _housesSorter(houses, query)
     const housesPaged = _housesPager(housesSorted, query)
@@ -77,7 +77,7 @@ function _buildCriteria(query) {
     var total = +query.adults
     if (query.kids) total += +query.kids
     if (query.infants) total += +query.infants
-    criteria.capacity = { $gte: total } 
+    criteria.capacity = { $gte: total }
   }
   if (query.hostId) {
     criteria['host._id'] = query.hostId
@@ -85,9 +85,20 @@ function _buildCriteria(query) {
   return criteria
 }
 
-function _housesSorter(houses, { sortBy = 'name' }) {
+// function _buildSorter({houses, query}) {
+// const sorter = {}
+// if (query.sortBy === 'rating') {
+// sorter[query.sortBy] = -1
+// }
+// console.log(sorter);
+// return sorter
+// }
+
+function _housesSorter(houses, { sortBy = 'rating' }) {
   return houses.sort((a, b) => {
-    return a[sortBy].toString() >= b[sortBy].toString() ? 1 : -1
+    if (sortBy === 'rating') {
+      return _ratingAverage(a) <= _ratingAverage(b) ? 1 : -1
+    } else return a[sortBy].toString() >= b[sortBy].toString() ? 1 : -1
   })
 }
 
@@ -95,4 +106,19 @@ function _housesPager(houses, { page = 1, limit = 10 }) {
   return houses.filter(
     (house, idx) => idx >= page * limit - limit && idx <= page * limit - 1
   )
+}
+
+function _ratingAverage(house) {
+  const format = (num, decimals) =>
+    num.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
+  var ratingSum = 0
+  if (house.reviews) {
+    house.reviews.forEach(review => {
+      ratingSum += +review.rating
+    })
+    return format(ratingSum / house.reviews.length)
+  } else return 0
 }
