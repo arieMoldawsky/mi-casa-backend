@@ -1,4 +1,5 @@
 const dbService = require('../../services/db.service')
+const { use } = require('../booking/booking.routes')
 const ObjectId = require('mongodb').ObjectId
 
 module.exports = {
@@ -7,6 +8,7 @@ module.exports = {
   remove,
   update,
   add,
+  unreadBooking
 }
 
 async function getById(userId) {
@@ -53,8 +55,22 @@ async function update(user) {
   }
 }
 
+async function unreadBooking(user) {
+  const collection = await dbService.getCollection('user')
+  // user.unreadBookings = user.unreadBookings + 1;
+  user._id = ObjectId(user._id)
+  try {
+    const updatedUser = await collection.updateOne({ _id: user._id }, { $inc: {unreadBookings: 1} });
+    return updatedUser
+  } catch (err) {
+    console.log(`ERROR: cannot update unread bookings ${user._id}`)
+    throw err
+  }
+}
+
 async function add(user) {
   const collection = await dbService.getCollection('user')
+  user.unreadBookings = 0;
   try {
     await collection.insertOne(user)
     return user

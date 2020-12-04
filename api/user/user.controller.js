@@ -24,9 +24,16 @@ async function updateUser(req, res) {
     res.send(user)
 }
 
+async function unreadBooking(req, res) {
+    const user = req.body;
+    await userService.unreadBooking(user)
+    res.send(user)
+}
+
 module.exports = {
     getUser,
     getUsers,
     deleteUser,
-    updateUser
+    updateUser,
+    unreadBooking
 }
