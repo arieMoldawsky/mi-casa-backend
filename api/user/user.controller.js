@@ -5,7 +5,7 @@ async function getUser(req, res) {
     const user = await userService.getById(req.params.id)
     res.send(user)
 }
-  
+
 async function getUsers(req, res) {
     console.log(req.query);
     const users = await userService.query(req.query)
@@ -26,8 +26,14 @@ async function updateUser(req, res) {
 
 async function unreadBooking(req, res) {
     const user = req.body;
-    await userService.unreadBooking(user)
-    res.send(user)
+    const updatedUser = await userService.unreadBooking(user)
+    res.send(updatedUser)
+}
+
+async function resetUnreadBookings(req, res) {
+    const user = req.body;
+    const updatedUser = await userService.resetUnreadBookings(user)
+    res.send(updatedUser)
 }
 
 module.exports = {
@@ -35,5 +41,6 @@ module.exports = {
     getUsers,
     deleteUser,
     updateUser,
-    unreadBooking
+    unreadBooking,
+    resetUnreadBookings
 }

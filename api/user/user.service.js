@@ -8,7 +8,8 @@ module.exports = {
   remove,
   update,
   add,
-  unreadBooking
+  unreadBooking,
+  resetUnreadBookings
 }
 
 async function getById(userId) {
@@ -60,7 +61,21 @@ async function unreadBooking(user) {
   // user.unreadBookings = user.unreadBookings + 1;
   user._id = ObjectId(user._id)
   try {
-    const updatedUser = await collection.updateOne({ _id: user._id }, { $inc: {unreadBookings: 1} });
+    await collection.updateOne({ _id: user._id }, { $inc: {unreadBookings: 1} });
+    const updatedUser = await collection.findOne({ _id: user._id });
+    return updatedUser
+  } catch (err) {
+    console.log(`ERROR: cannot update unread bookings ${user._id}`)
+    throw err
+  }
+}
+
+async function resetUnreadBookings(user) {
+  const collection = await dbService.getCollection('user')
+  user._id = ObjectId(user._id)
+  try {
+    await collection.updateOne({ _id: user._id }, { $set: {unreadBookings: 0} });
+    const updatedUser = await collection.findOne({ _id: user._id });
     return updatedUser
   } catch (err) {
     console.log(`ERROR: cannot update unread bookings ${user._id}`)
