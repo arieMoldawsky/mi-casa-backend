@@ -96,7 +96,6 @@ function _buildCriteria(query) {
   if (query.amenities) {
     criteria.amenities = { $all: query.amenities.split(',') }
   }
-  console.log(criteria)
   return criteria
 }
 
