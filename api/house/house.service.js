@@ -80,7 +80,7 @@ function _buildCriteria(query) {
     if (query.infants) total += +query.infants
     criteria.capacity = { $gte: total }
   }
-  if (query.hostId) {
+  if (query.hostId) { 
     criteria['host._id'] = query.hostId
   }
   if (query.minPrice || query.maxPrice) {
