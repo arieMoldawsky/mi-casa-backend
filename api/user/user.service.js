@@ -58,12 +58,11 @@ async function update(user) {
 
 async function unreadBooking(user) {
   const collection = await dbService.getCollection('user')
-  // user.unreadBookings = user.unreadBookings + 1;
   user._id = ObjectId(user._id)
   try {
-    await collection.updateOne({ _id: user._id }, { $inc: {unreadBookings: 1} });
-    const updatedUser = await collection.findOne({ _id: user._id });
-    return updatedUser
+    const res = await collection.updateOne({ _id: user._id }, { $inc: {unreadBookings: 1} });
+    // const updatedUser = await collection.findOne({ _id: user._id });
+    return res
   } catch (err) {
     console.log(`ERROR: cannot update unread bookings ${user._id}`)
     throw err
