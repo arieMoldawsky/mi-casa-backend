@@ -57,7 +57,7 @@ async function update(house) {
 
 async function add(house) {
   const collection = await dbService.getCollection('house')
-  console.log(collection);
+  console.log(collection)
   try {
     await collection.insertOne(house)
     return house
@@ -82,6 +82,19 @@ function _buildCriteria(query) {
   }
   if (query.hostId) {
     criteria['host._id'] = query.hostId
+  }
+  if (query.minPrice || query.maxPrice) {
+    if (!criteria.$and) criteria.$and = []
+    criteria.$and.push(
+      { price: { $gte: query.minPrice ? +query.minPrice : 0 } },
+      { price: { $lte: query.maxPrice ? +query.maxPrice : 10000 } }
+    )
+  }
+  if (query.type) {
+    criteria.type = { $in: query.type.split(',') }
+  }
+  if (query.amenities) {
+    criteria.amenities = { $all: query.amenities.split(',') }
   }
   return criteria
 }
