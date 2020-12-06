@@ -21,7 +21,7 @@ async function deleteBooking(req, res) {
         res.status(500).send({ error: 'cannot delete booking' })
     }
 }
-
+ 
 async function addBooking(req, res) {
     var booking = req.body;
     // booking.byUserId = req.session.user._id;
