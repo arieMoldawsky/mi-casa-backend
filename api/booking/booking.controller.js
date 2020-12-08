@@ -30,7 +30,7 @@ async function addBooking(req, res) {
     //     fullName: req.session.user.fullName,
     //     imgUrl: req.session.user.imgUrl
     // };
-    try {
+    try { 
         booking = await bookingService.add(booking)
         res.send(booking)
     } catch (err) {
