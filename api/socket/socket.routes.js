@@ -18,7 +18,7 @@ function connectSockets(io) {
       socket.join(userId)
       socket.userId = userId
     })
-
+ 
     socket.on('onBookingAdded', msg => {
       io.to(msg.hostId).emit('userMsg', {
         type: `success`,
